@@ -25,12 +25,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TitledPane animated="false" collapsible="false" prefHeight="489.0" prefWidth="349.0" text="AT&amp;T">
+                  <TitledPane fx:id="attPane" animated="false" collapsible="false" prefHeight="489.0" prefWidth="349.0" text="AT&amp;T">
                      <GridPane.margin>
                         <Insets left="20.0" right="20.0" />
                      </GridPane.margin>
                      <content>
-                        <GridPane gridLinesVisible="true">
+                        <GridPane fx:id="attGrid" gridLinesVisible="true">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -212,15 +212,15 @@
                         </GridPane>
                      </content>
                      <font>
-                        <Font name="System Bold" size="16.0" />
+                        <Font size="16.0" />
                      </font>
                   </TitledPane>
-                  <TitledPane animated="false" collapsible="false" prefHeight="487.0" prefWidth="349.0" text="Verizon" GridPane.columnIndex="1">
+                  <TitledPane fx:id="verizonPane" animated="false" collapsible="false" prefHeight="487.0" prefWidth="349.0" text="Verizon" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets left="20.0" right="20.0" />
                      </GridPane.margin>
                      <content>
-                        <GridPane gridLinesVisible="true">
+                        <GridPane fx:id="verizonGrid" gridLinesVisible="true">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -402,7 +402,7 @@
                         </GridPane>
                      </content>
                      <font>
-                        <Font name="System Bold" size="16.0" />
+                        <Font size="16.0" />
                      </font>
                   </TitledPane>
                </children>

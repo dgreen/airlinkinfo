@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.GridPane;
 
 public class PrimaryController {
 
@@ -15,6 +17,8 @@ public class PrimaryController {
   @FXML private TextField satellitesTB;
 
   // Left Panel
+  @FXML private TitledPane attPane;
+  @FXML private GridPane attGrid;
   @FXML private TextField typeTB0;
   @FXML private TextField availableTB0;
   @FXML private TextField bandTB0;
@@ -26,6 +30,8 @@ public class PrimaryController {
   @FXML private TextField sinrTB0;
 
   // Right Panel
+  @FXML private TitledPane verizonPane;
+  @FXML private GridPane verizonGrid;
   @FXML private TextField typeTB1;
   @FXML private TextField availableTB1;
   @FXML private TextField bandTB1;
@@ -149,6 +155,7 @@ public class PrimaryController {
     for (WanStateDTO wanState : wanStates) {
       if (wanState.getFriendlyName().contains("AT&T")) {
         // AT&T
+        attGrid.setStyle("-fx-background-color: " + colorPick(wanState));
         typeTB0.setText("" + wanState.getNetworkType());
         availableTB0.setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
         bandTB0.setText("" + wanState.getBandNo());
@@ -160,6 +167,7 @@ public class PrimaryController {
         sinrTB0.setText("" + wanState.getSinr());
       } else if (wanState.getFriendlyName().contains("Verizon")) {
         // Verizon
+        verizonGrid.setStyle("-fx-background-color: " + colorPick(wanState));
         typeTB1.setText("" + wanState.getNetworkType());
         availableTB1.setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
         bandTB1.setText("" + wanState.getBandNo());
@@ -171,5 +179,16 @@ public class PrimaryController {
         sinrTB1.setText("" + wanState.getSinr());
       }
     }
+  }
+
+  private String colorPick(WanStateDTO ws) {
+
+    if (ws.isActive()) {
+      return "LIGHTGREEN";
+    }
+    if (ws.getStatus() == 0) {
+      return "PINK";
+    }
+    return "LIGHTGREY";
   }
 }
