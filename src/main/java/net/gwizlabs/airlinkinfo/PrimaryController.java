@@ -58,7 +58,7 @@ public class PrimaryController {
     //            enableReadyButtons();
     //        }
     //    });
-    makeTestObject();
+    // makeTestObject();
   }
 
   @FXML
@@ -137,7 +137,7 @@ public class PrimaryController {
       AirLinkDTO info = objectMapper.readValue(jsonInfo, AirLinkDTO.class);
       updateDisplay(info);
     } catch (JsonProcessingException e) {
-      System.out.println("Error in Json Processin: " + e);
+      System.out.println("Error in Json Processing: " + e);
     }
   }
 
