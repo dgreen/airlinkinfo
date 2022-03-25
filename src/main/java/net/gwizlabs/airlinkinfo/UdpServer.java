@@ -1,8 +1,6 @@
 /*
- * Author: David G. Green <DGreen@uab.edu>
- * Assignment:  airlinkInfo - EE333 Spring 2022
- *
- * Credits:  (if any for sections of code)
+ * Author: David G. Green <d.green@ieee.org>
+ * System:  airlinkInfo
  */
 
 package net.gwizlabs.airlinkinfo;
@@ -24,10 +22,16 @@ public class UdpServer extends Thread {
     this.port = port;
   }
 
+  /**
+   * Allow external object to register the PrimaryController which has a updateDisplay(info)
+   *
+   * @param p primaryController object
+   */
   public void registerGui(PrimaryController p) {
     gui = p;
   }
 
+  /** Run the thread */
   @Override
   public void run() {
     DatagramSocket socket;
@@ -41,6 +45,7 @@ public class UdpServer extends Thread {
       System.out.println("I/O error: " + ex.getMessage());
     }
   }
+
   /**
    * Server for broadcast UDPs to collect json payload and send to gui controller to unpack and
    * display
