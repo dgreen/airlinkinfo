@@ -151,32 +151,103 @@ public class PrimaryController {
     timeTB.setText("" + info.getTimestamp().getTime());
 
     var wanStates = info.getWanState();
+    final TextField[][] wanStateTB = {
+      {
+        typeTB0,
+        availableTB0,
+        bandTB0,
+        bandwidthTB0,
+        signalStrengthTB0,
+        rssiTB0,
+        rsrpTB0,
+        rsrqTB0,
+        sinrTB0
+      },
+      {
+        typeTB1,
+        availableTB1,
+        bandTB1,
+        bandwidthTB1,
+        signalStrengthTB1,
+        rssiTB1,
+        rsrpTB1,
+        rsrqTB1,
+        sinrTB1
+      },
+    };
 
     for (WanStateDTO wanState : wanStates) {
       if (wanState.getFriendlyName().contains("AT&T")) {
         // AT&T
         attGrid.setStyle("-fx-background-color: " + colorPick(wanState));
-        typeTB0.setText("" + wanState.getNetworkType());
-        availableTB0.setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
-        bandTB0.setText("" + wanState.getBandNo());
-        bandwidthTB0.setText("" + wanState.getBandwidth());
-        signalStrengthTB0.setText("" + wanState.getSignalStrength());
-        rssiTB0.setText("" + wanState.getRssi());
-        rsrpTB0.setText("" + wanState.getRsrp());
-        rsrqTB0.setText("" + wanState.getRsrq());
-        sinrTB0.setText("" + wanState.getSinr());
+        setGrid(wanStateTB[0], wanState);
       } else if (wanState.getFriendlyName().contains("Verizon")) {
         // Verizon
         verizonGrid.setStyle("-fx-background-color: " + colorPick(wanState));
-        typeTB1.setText("" + wanState.getNetworkType());
-        availableTB1.setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
-        bandTB1.setText("" + wanState.getBandNo());
-        bandwidthTB1.setText("" + wanState.getBandwidth());
-        signalStrengthTB1.setText("" + wanState.getSignalStrength());
-        rssiTB1.setText("" + wanState.getRssi());
-        rsrpTB1.setText("" + wanState.getRsrp());
-        rsrqTB1.setText("" + wanState.getRsrq());
-        sinrTB1.setText("" + wanState.getSinr());
+        setGrid(wanStateTB[1], wanState);
+      }
+    }
+  }
+
+  /**
+   * Set grid elements using textFields array of elements using wanstate values. Colorize values
+   * based on values
+   *
+   * <p>Ranges and colors are from 4G (LTE) colors in this article:
+   * https://wiki.teltonika-networks.com/view/Mobile_Signal_Strength_Recommendations
+   *
+   * @param textFields references into a Grid
+   * @param wanState values for one wan from AirLink
+   */
+  private void setGrid(TextField[] textFields, WanStateDTO wanState) {
+    String fourColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D"};
+    String fiveColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D", "#AB0312"};
+
+    // type
+    textFields[0].setText("" + wanState.getNetworkType());
+    // available
+    textFields[1].setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
+    textFields[1].setStyle(
+        "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
+    // band
+    textFields[2].setText("" + wanState.getBandNo());
+    // bandwidth
+    textFields[3].setText("" + wanState.getBandwidth());
+    // signalStrength
+    textFields[4].setText("" + wanState.getSignalStrength());
+    // rssi
+    setField(
+        textFields[5],
+        wanState.getRssi(),
+        new double[] {-65., -75., -85., -95., -100000.},
+        fiveColors);
+    // rsrp
+    setField(
+        textFields[6], wanState.getRsrp(), new double[] {-80., -90., -100., -100000.}, fourColors);
+    // rsrq
+    setField(
+        textFields[7], wanState.getRsrq(), new double[] {-10., -15., -20., -100000.}, fourColors);
+    // sinr
+    setField(textFields[8], wanState.getSinr(), new double[] {20., 13., 0., -100000.}, fourColors);
+  }
+
+  /**
+   * Set the text field's text and color
+   *
+   * <p>If the value > threshold, use the corresponding color If on the last threshold, use the
+   * corresponding color anyway
+   *
+   * @param tf textField to use
+   * @param value actual value
+   * @param threshold array of thresholds
+   * @param colors array of color strings
+   */
+  private void setField(TextField tf, double value, double threshold[], String[] colors) {
+    tf.setText("" + value);
+    for (int i = 0; i < threshold.length; i++) {
+      if (value > threshold[i] || (i == threshold.length - 1)) {
+        tf.setStyle("-fx-background-color: " + colors[i]);
+        break;
       }
     }
   }
