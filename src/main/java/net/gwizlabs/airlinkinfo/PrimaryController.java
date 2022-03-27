@@ -243,10 +243,13 @@ public class PrimaryController {
    * @param colors array of color strings
    */
   private void setField(TextField tf, double value, double threshold[], String[] colors) {
+    String textColors[] = {"#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF"};
+
     tf.setText("" + value);
     for (int i = 0; i < threshold.length; i++) {
       if (value > threshold[i] || (i == threshold.length - 1)) {
-        tf.setStyle("-fx-background-color: " + colors[i]);
+        tf.setStyle(
+            "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i]);
         break;
       }
     }
