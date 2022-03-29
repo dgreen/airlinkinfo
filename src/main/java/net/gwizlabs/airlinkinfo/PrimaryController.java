@@ -67,69 +67,69 @@ public class PrimaryController {
   }
 
   public void makeTestObject() {
-    String jsonInfo =
-        """
-{
-  "timestamp": {
-    "date": "03182022",
-    "time": "1453"
-  },
-
-  "version": "4.3.1.2",
-
-  "vehicleID": "~",
-
-  "location": {
-    "latitude": 35.952372,
-    "longitude": -78.964191
-  },
-
-  "wanState": [
+    String jsonInfo = "";
+    /*        """
     {
-      "friendlyName": "Panel Ethernet 5",
-      "status": 0,
-      "active": false,
-      "networkType": "Ethernet"
-    },
-    {
-      "friendlyName": "Sierra Wireless EM75XX @ MiniCard USB3 CA (Cellular A) AT&T",
-      "status": 1,
-      "active": true,
-      "networkType": "Cellular",
-      "signalStrength": -65.000000,
-      "bandNo": "14",
-      "bandwidth": 10,
-      "RSSI": -65.000000,
-      "RSRP": -99.000000,
-      "RSRQ": -15.600000,
-      "SINR": 0.600000
-    },
-    {
-      "friendlyName": "Sierra Wireless EM75XX @ MiniCard USB3 CB (Cellular B) Verizon",
-      "status": 1,
-      "active": false,
-      "networkType": "Cellular",
-      "signalStrength": -53.909092,
-      "bandNo": "5",
-      "bandwidth": 10,
-      "RSSI": -50.000000,
-      "RSRP": -75.000000,
-      "RSRQ": -7.900000,
-      "SINR": 20.600000
+      "timestamp": {
+        "date": "03182022",
+        "time": "1453"
+      },
+
+      "version": "4.3.1.2",
+
+      "vehicleID": "~",
+
+      "location": {
+        "latitude": 35.952372,
+        "longitude": -78.964191
+      },
+
+      "wanState": [
+        {
+          "friendlyName": "Panel Ethernet 5",
+          "status": 0,
+          "active": false,
+          "networkType": "Ethernet"
+        },
+        {
+          "friendlyName": "Sierra Wireless EM75XX @ MiniCard USB3 CA (Cellular A) AT&T",
+          "status": 1,
+          "active": true,
+          "networkType": "Cellular",
+          "signalStrength": -65.000000,
+          "bandNo": "14",
+          "bandwidth": 10,
+          "RSSI": -65.000000,
+          "RSRP": -99.000000,
+          "RSRQ": -15.600000,
+          "SINR": 0.600000
+        },
+        {
+          "friendlyName": "Sierra Wireless EM75XX @ MiniCard USB3 CB (Cellular B) Verizon",
+          "status": 1,
+          "active": false,
+          "networkType": "Cellular",
+          "signalStrength": -53.909092,
+          "bandNo": "5",
+          "bandwidth": 10,
+          "RSSI": -50.000000,
+          "RSRP": -75.000000,
+          "RSRQ": -7.900000,
+          "SINR": 20.600000
+        }
+      ],
+
+      "gnssStatus": {
+        "fix": true,
+        "numberSatellites": 3
+      },
+
+      "generalInformation": {
+        "internalTemperature": 26.666667
+      }
+
     }
-  ],
-
-  "gnssStatus": {
-    "fix": true,
-    "numberSatellites": 3
-  },
-
-  "generalInformation": {
-    "internalTemperature": 26.666667
-  }
-
-}
-    """;
+        """; */
 
     ObjectMapper objectMapper = new ObjectMapper();
 
