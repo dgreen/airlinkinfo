@@ -2,6 +2,7 @@ package net.gwizlabs.airlinkinfo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -178,11 +179,17 @@ public class PrimaryController {
     for (WanStateDTO wanState : wanStates) {
       if (wanState.getFriendlyName().contains("AT&T")) {
         // AT&T
-        attGrid.setStyle("-fx-background-color: " + colorPick(wanState));
+        Platform.runLater(
+            () -> {
+              attGrid.setStyle("-fx-background-color: " + colorPick(wanState));
+            });
         setGrid(wanStateTB[0], wanState);
       } else if (wanState.getFriendlyName().contains("Verizon")) {
         // Verizon
-        verizonGrid.setStyle("-fx-background-color: " + colorPick(wanState));
+        Platform.runLater(
+            () -> {
+              verizonGrid.setStyle("-fx-background-color: " + colorPick(wanState));
+            });
         setGrid(wanStateTB[1], wanState);
       }
     }
