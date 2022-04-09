@@ -3,7 +3,10 @@ module net.gwizlabs.airlinkinfo {
   requires javafx.fxml;
   requires java.compiler;
   requires com.fasterxml.jackson.databind;
-
+  requires com.fasterxml.jackson.core;
+  
+  requires com.fasterxml.jackson.annotation;  // requires jackson-annotations;
+  
   opens net.gwizlabs.airlinkinfo to
       javafx.fxml;
 

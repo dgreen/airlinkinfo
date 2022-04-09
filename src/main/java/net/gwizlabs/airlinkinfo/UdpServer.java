@@ -72,7 +72,9 @@ public class UdpServer extends Thread {
         AirLinkDTO info = objectMapper.readValue(jsonPayload, AirLinkDTO.class);
         gui.updateDisplay(info);
       } catch (JsonProcessingException e) {
-        System.out.println("Error in Json Processin: " + e);
+        System.out.println("Error in Json Processing: " + e);
+      } catch (Exception e) {
+        System.out.println("Another execption: " + e);
       }
     }
   }

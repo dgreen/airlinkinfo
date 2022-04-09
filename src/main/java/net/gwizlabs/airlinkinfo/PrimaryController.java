@@ -3,10 +3,10 @@ package net.gwizlabs.airlinkinfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.application.Platform;
 
 public class PrimaryController {
 
@@ -43,9 +43,9 @@ public class PrimaryController {
   @FXML private TextField sinrTB1;
 
   // speed test
-  @FXML private Button testTB;
-  @FXML private TextField downTB;
-  @FXML private TextField upTB;
+  // @FXML private Button testTB;
+  // @FXML private TextField downTB;
+  // @FXML private TextField upTB;
 
   @FXML
   public void initialize() {
@@ -67,8 +67,8 @@ public class PrimaryController {
   }
 
   public void makeTestObject() {
-    String jsonInfo =
-        """
+    String jsonInfo = "";
+/**        """
 {
   "timestamp": {
     "date": "03182022",
@@ -130,7 +130,7 @@ public class PrimaryController {
 
 }
     """;
-
+*/
     ObjectMapper objectMapper = new ObjectMapper();
 
     try {
@@ -179,12 +179,20 @@ public class PrimaryController {
     for (WanStateDTO wanState : wanStates) {
       if (wanState.getFriendlyName().contains("AT&T")) {
         // AT&T
-        attGrid.setStyle("-fx-background-color: " + colorPick(wanState));
+        String colorInfo = "-fx-background-color: " + colorPick(wanState);
+        Platform.runLater(
+          () -> {
+          attGrid.setStyle(colorInfo);
+        });
         setGrid(wanStateTB[0], wanState);
       } else if (wanState.getFriendlyName().contains("Verizon")) {
         // Verizon
-        verizonGrid.setStyle("-fx-background-color: " + colorPick(wanState));
-        setGrid(wanStateTB[1], wanState);
+        String colorInfo = "-fx-background-color: " + colorPick(wanState);
+        Platform.runLater(
+          () -> {
+            verizonGrid.setStyle(colorInfo);
+        });
+      setGrid(wanStateTB[1], wanState);
       }
     }
   }
@@ -207,8 +215,11 @@ public class PrimaryController {
     textFields[0].setText("" + wanState.getNetworkType());
     // available
     textFields[1].setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
-    textFields[1].setStyle(
-        "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
+    Platform.runLater(
+      () -> {
+         textFields[1].setStyle(
+            "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
+      });
     // band
     textFields[2].setText("" + wanState.getBandNo());
     // bandwidth
@@ -231,7 +242,7 @@ public class PrimaryController {
     setField(textFields[8], wanState.getSinr(), new double[] {20., 13., 0., -100000.}, fourColors);
   }
 
-  /**
+ /**
    * Set the text field's text and color
    *
    * <p>If the value > threshold, use the corresponding color If on the last threshold, use the
@@ -248,8 +259,11 @@ public class PrimaryController {
     tf.setText("" + value);
     for (int i = 0; i < threshold.length; i++) {
       if (value > threshold[i] || (i == threshold.length - 1)) {
-        tf.setStyle(
-            "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i]);
+        String colorInfo = "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i];
+        Platform.runLater(
+          () -> {
+            tf.setStyle(colorInfo);
+          });
         break;
       }
     }
