@@ -3,7 +3,6 @@ package net.gwizlabs.airlinkinfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
@@ -43,9 +42,9 @@ public class PrimaryController {
   @FXML private TextField sinrTB1;
 
   // speed test
-  @FXML private Button testTB;
-  @FXML private TextField downTB;
-  @FXML private TextField upTB;
+  //  @FXML private Button testTB;
+  //  @FXML private TextField downTB;
+  //  @FXML private TextField upTB;
 
   @FXML
   public void initialize() {
