@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
-import javafx.application.Platform;
 
 public class PrimaryController {
 
@@ -43,6 +42,8 @@ public class PrimaryController {
   @FXML private TextField rsrqTB1;
   @FXML private TextField sinrTB1;
 
+  private TextField[][] wanStateTB;
+
   // speed test
   // @FXML private Button testTB;
   // @FXML private TextField downTB;
@@ -60,6 +61,31 @@ public class PrimaryController {
     //        }
     //    });
     // makeTestObject();
+    TextField[][] wanStateTBi = {
+      {
+        typeTB0,
+        availableTB0,
+        bandTB0,
+        bandwidthTB0,
+        signalStrengthTB0,
+        rssiTB0,
+        rsrpTB0,
+        rsrqTB0,
+        sinrTB0
+      },
+      {
+        typeTB1,
+        availableTB1,
+        bandTB1,
+        bandwidthTB1,
+        signalStrengthTB1,
+        rssiTB1,
+        rsrpTB1,
+        rsrqTB1,
+        sinrTB1
+      },
+    };
+    wanStateTB = wanStateTBi;
   }
 
   @FXML
@@ -142,6 +168,11 @@ public class PrimaryController {
     }
   }
 
+  /**
+   * Update the display based on new info
+   *
+   * @param info object version of the original JSON from Airlink
+   */
   public void updateDisplay(AirLinkDTO info) {
     locationTB.setText(
         "" + info.getLocation().getLatitude() + ", " + info.getLocation().getLongitude());
@@ -152,51 +183,36 @@ public class PrimaryController {
     timeTB.setText("" + info.getTimestamp().getTime());
 
     var wanStates = info.getWanState();
-    final TextField[][] wanStateTB = {
-      {
-        typeTB0,
-        availableTB0,
-        bandTB0,
-        bandwidthTB0,
-        signalStrengthTB0,
-        rssiTB0,
-        rsrpTB0,
-        rsrqTB0,
-        sinrTB0
-      },
-      {
-        typeTB1,
-        availableTB1,
-        bandTB1,
-        bandwidthTB1,
-        signalStrengthTB1,
-        rssiTB1,
-        rsrpTB1,
-        rsrqTB1,
-        sinrTB1
-      },
-    };
 
     for (WanStateDTO wanState : wanStates) {
       if (wanState.getFriendlyName().contains("AT&T")) {
         // AT&T
         String colorInfo = "-fx-background-color: " + colorPick(wanState);
         Platform.runLater(
-          () -> {
-          attGrid.setStyle(colorInfo);
-        });
+            () -> {
+              attGrid.setStyle(colorInfo);
+            });
         setGrid(wanStateTB[0], wanState);
       } else if (wanState.getFriendlyName().contains("Verizon")) {
         // Verizon
         String colorInfo = "-fx-background-color: " + colorPick(wanState);
         Platform.runLater(
-          () -> {
-            verizonGrid.setStyle(colorInfo);
-        });
-      setGrid(wanStateTB[1], wanState);
+            () -> {
+              verizonGrid.setStyle(colorInfo);
+            });
+        setGrid(wanStateTB[1], wanState);
       }
     }
   }
+
+  private final String fourColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D"};
+  private final String fiveColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D", "#AB0312"};
+
+  private final double[] rsrpThresholds = new double[] {-80., -90., -100., -100000.};
+  private final double[] rsrqThresholds = new double[] {-10., -15., -20., -100000.};
+  private final double[] sinrThresholds = new double[] {20., 13., 0., -100000.};
+
+  private final String textColors[] = {"#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF"};
 
   /**
    * Set grid elements using textFields array of elements using wanstate values. Colorize values
@@ -209,18 +225,16 @@ public class PrimaryController {
    * @param wanState values for one wan from AirLink
    */
   private void setGrid(TextField[] textFields, WanStateDTO wanState) {
-    String fourColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D"};
-    String fiveColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D", "#AB0312"};
 
     // type
     textFields[0].setText("" + wanState.getNetworkType());
     // available
     textFields[1].setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
     Platform.runLater(
-      () -> {
-         textFields[1].setStyle(
-            "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
-      });
+        () -> {
+          textFields[1].setStyle(
+              "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
+        });
     // band
     textFields[2].setText("" + wanState.getBandNo());
     // bandwidth
@@ -234,16 +248,14 @@ public class PrimaryController {
         new double[] {-65., -75., -85., -95., -100000.},
         fiveColors);
     // rsrp
-    setField(
-        textFields[6], wanState.getRsrp(), new double[] {-80., -90., -100., -100000.}, fourColors);
+    setField(textFields[6], wanState.getRsrp(), rsrpThresholds, fourColors);
     // rsrq
-    setField(
-        textFields[7], wanState.getRsrq(), new double[] {-10., -15., -20., -100000.}, fourColors);
+    setField(textFields[7], wanState.getRsrq(), rsrqThresholds, fourColors);
     // sinr
-    setField(textFields[8], wanState.getSinr(), new double[] {20., 13., 0., -100000.}, fourColors);
+    setField(textFields[8], wanState.getSinr(), sinrThresholds, fourColors);
   }
 
- /**
+  /**
    * Set the text field's text and color
    *
    * <p>If the value > threshold, use the corresponding color If on the last threshold, use the
@@ -255,16 +267,16 @@ public class PrimaryController {
    * @param colors array of color strings
    */
   private void setField(TextField tf, double value, double threshold[], String[] colors) {
-    String textColors[] = {"#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF"};
 
     tf.setText("" + value);
     for (int i = 0; i < threshold.length; i++) {
       if (value > threshold[i] || (i == threshold.length - 1)) {
-        String colorInfo = "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i];
+        String colorInfo =
+            "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i];
         Platform.runLater(
-          () -> {
-            tf.setStyle(colorInfo);
-          });
+            () -> {
+              tf.setStyle(colorInfo);
+            });
         break;
       }
     }
