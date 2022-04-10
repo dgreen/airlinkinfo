@@ -174,13 +174,16 @@ public class PrimaryController {
    * @param info object version of the original JSON from Airlink
    */
   public void updateDisplay(AirLinkDTO info) {
-    locationTB.setText(
-        "" + info.getLocation().getLatitude() + ", " + info.getLocation().getLongitude());
+    Platform.runLater(
+        () -> {
+          locationTB.setText(
+              "" + info.getLocation().getLatitude() + ", " + info.getLocation().getLongitude());
 
-    satellitesTB.setText("" + info.getGnssStatus().getNumberSatellites());
+          satellitesTB.setText("" + info.getGnssStatus().getNumberSatellites());
 
-    dateTB.setText("" + info.getTimestamp().getDate());
-    timeTB.setText("" + info.getTimestamp().getTime());
+          dateTB.setText("" + info.getTimestamp().getDate());
+          timeTB.setText("" + info.getTimestamp().getTime());
+        });
 
     var wanStates = info.getWanState();
 
