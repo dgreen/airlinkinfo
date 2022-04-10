@@ -203,6 +203,7 @@ public class PrimaryController {
         setGrid(wanStateTB[1], wanState);
       }
     }
+    System.gc();
   }
 
   private final String fourColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D"};
@@ -226,33 +227,33 @@ public class PrimaryController {
    */
   private void setGrid(TextField[] textFields, WanStateDTO wanState) {
 
-    // type
-    textFields[0].setText("" + wanState.getNetworkType());
-    // available
-    textFields[1].setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
     Platform.runLater(
         () -> {
+          // type
+          textFields[0].setText("" + wanState.getNetworkType());
+          // available
+          textFields[1].setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
           textFields[1].setStyle(
               "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
+          // band
+          textFields[2].setText("" + wanState.getBandNo());
+          // bandwidth
+          textFields[3].setText("" + wanState.getBandwidth());
+          // signalStrength
+          textFields[4].setText("" + wanState.getSignalStrength());
+          // rssi
+          setField(
+              textFields[5],
+              wanState.getRssi(),
+              new double[] {-65., -75., -85., -95., -100000.},
+              fiveColors);
+          // rsrp
+          setField(textFields[6], wanState.getRsrp(), rsrpThresholds, fourColors);
+          // rsrq
+          setField(textFields[7], wanState.getRsrq(), rsrqThresholds, fourColors);
+          // sinr
+          setField(textFields[8], wanState.getSinr(), sinrThresholds, fourColors);
         });
-    // band
-    textFields[2].setText("" + wanState.getBandNo());
-    // bandwidth
-    textFields[3].setText("" + wanState.getBandwidth());
-    // signalStrength
-    textFields[4].setText("" + wanState.getSignalStrength());
-    // rssi
-    setField(
-        textFields[5],
-        wanState.getRssi(),
-        new double[] {-65., -75., -85., -95., -100000.},
-        fiveColors);
-    // rsrp
-    setField(textFields[6], wanState.getRsrp(), rsrpThresholds, fourColors);
-    // rsrq
-    setField(textFields[7], wanState.getRsrq(), rsrqThresholds, fourColors);
-    // sinr
-    setField(textFields[8], wanState.getSinr(), sinrThresholds, fourColors);
   }
 
   /**
@@ -273,10 +274,10 @@ public class PrimaryController {
       if (value > threshold[i] || (i == threshold.length - 1)) {
         String colorInfo =
             "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i];
-        Platform.runLater(
-            () -> {
-              tf.setStyle(colorInfo);
-            });
+        //        Platform.runLater(
+        //            () -> {
+        tf.setStyle(colorInfo);
+        //            });
         break;
       }
     }
