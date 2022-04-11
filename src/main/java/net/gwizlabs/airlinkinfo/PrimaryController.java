@@ -190,7 +190,7 @@ public class PrimaryController {
     for (WanStateDTO wanState : wanStates) {
       if (wanState.getFriendlyName().contains("AT&T")) {
         // AT&T
-        String colorInfo = "-fx-background-color: " + colorPick(wanState);
+        String colorInfo = colorPick(wanState);
         Platform.runLater(
             () -> {
               attGrid.setStyle(colorInfo);
@@ -198,7 +198,7 @@ public class PrimaryController {
         setGrid(wanStateTB[0], wanState);
       } else if (wanState.getFriendlyName().contains("Verizon")) {
         // Verizon
-        String colorInfo = "-fx-background-color: " + colorPick(wanState);
+        String colorInfo = colorPick(wanState);
         Platform.runLater(
             () -> {
               verizonGrid.setStyle(colorInfo);
@@ -209,14 +209,33 @@ public class PrimaryController {
     System.gc();
   }
 
-  private final String fourColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D"};
-  private final String fiveColors[] = {"#6ACE61", "#FBFB43", "#F7BA30", "#EC031D", "#AB0312"};
-
   private final double[] rsrpThresholds = new double[] {-80., -90., -100., -100000.};
   private final double[] rsrqThresholds = new double[] {-10., -15., -20., -100000.};
   private final double[] sinrThresholds = new double[] {20., 13., 0., -100000.};
+  private final double[] rssiThresholds = new double[] {-65., -75., -85., -95., -100000.};
 
-  private final String textColors[] = {"#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF"};
+  // Changed to a constant strings to avoid making unnecessary objects on RPi
+
+  private final String fourColors[] = {
+    "-fx-background-color: #6ACE61",
+    "-fx-background-color: #FBFB43",
+    "-fx-background-color: #F7BA30",
+    "-fx-background-color: #EC031D"
+  };
+  private final String fiveColors[] = {
+    "-fx-background-color: #6ACE61",
+    "-fx-background-color: #FBFB43",
+    "-fx-background-color: #F7BA30",
+    "-fx-background-color: #EC031D",
+    "-fx-background-color: #AB0312"
+  };
+  private final String textColors[] = {
+    "-fx-text-inner-color: #000000",
+    "-fx-text-inner-color: #000000",
+    "-fx-text-inner-color: #000000",
+    "-fx-text-inner-color: #FFFFFF",
+    "-fx-text-inner-color: #FFFFFF"
+  };
 
   /**
    * Set grid elements using textFields array of elements using wanstate values. Colorize values
@@ -237,7 +256,9 @@ public class PrimaryController {
           // available
           textFields[1].setText("" + (wanState.getStatus() == 1 ? "Yes" : "No"));
           textFields[1].setStyle(
-              "-fx-background-color: " + (wanState.getStatus() == 1 ? "LIGHTGREEN" : "PINK"));
+              (wanState.getStatus() == 1
+                  ? "-fx-background-color: LIGHTGREEN"
+                  : "-fx-background-color: PINK"));
           // band
           textFields[2].setText("" + wanState.getBandNo());
           // bandwidth
@@ -245,11 +266,7 @@ public class PrimaryController {
           // signalStrength
           textFields[4].setText("" + wanState.getSignalStrength());
           // rssi
-          setField(
-              textFields[5],
-              wanState.getRssi(),
-              new double[] {-65., -75., -85., -95., -100000.},
-              fiveColors);
+          setField(textFields[5], wanState.getRssi(), rssiThresholds, fiveColors);
           // rsrp
           setField(textFields[6], wanState.getRsrp(), rsrpThresholds, fourColors);
           // rsrq
@@ -275,8 +292,7 @@ public class PrimaryController {
     tf.setText("" + value);
     for (int i = 0; i < threshold.length; i++) {
       if (value > threshold[i] || (i == threshold.length - 1)) {
-        String colorInfo =
-            "-fx-background-color: " + colors[i] + "; -fx-text-inner-color: " + textColors[i];
+        String colorInfo = colors[i] + "; " + textColors[i];
         //        Platform.runLater(
         //            () -> {
         tf.setStyle(colorInfo);
@@ -286,14 +302,22 @@ public class PrimaryController {
     }
   }
 
+  /**
+   * Return a color based on LTE Active/Status
+   *
+   * <p>Changed to a constant string to avoid making unnecessary objects on RPi
+   *
+   * @param ws
+   * @return "-fx-background-color: " + color
+   */
   private String colorPick(WanStateDTO ws) {
 
     if (ws.isActive()) {
-      return "LIGHTGREEN";
+      return "-fx-background-color: LIGHTGREEN";
     }
     if (ws.getStatus() == 0) {
-      return "PINK";
+      return "-fx-background-color: PINK";
     }
-    return "LIGHTGREY";
+    return "-fx-background-color: LIGHTGREY";
   }
 }
