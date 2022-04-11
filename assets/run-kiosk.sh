@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+sleep 25
 /sbin/init 3
+cd $(dirname "$0")
 export ENABLE_GLUON_COMMERCIAL_EXTENSIONS=true
 java \
   -Degl.displayid=/dev/dri/card0 \
