@@ -1,7 +1,8 @@
 package net.gwizlabs.airlinkinfo;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -13,7 +14,6 @@ public class PrimaryController {
   // map to GUI controls in fxml file
   @FXML private TextField locationTB;
   @FXML private TextField dateTB;
-  @FXML private TextField timeTB;
   @FXML private TextField satellitesTB;
 
   // Left Panel
@@ -93,9 +93,10 @@ public class PrimaryController {
     //
   }
 
+  /*
   public void makeTestObject() {
     String jsonInfo = "";
-    /*        """
+    """
     {
       "timestamp": {
         "date": "03182022",
@@ -156,33 +157,42 @@ public class PrimaryController {
       }
 
     }
-        """; */
+        """;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     try {
       AirLinkDTO info = objectMapper.readValue(jsonInfo, AirLinkDTO.class);
-      updateDisplay(info);
+      updateDisplay(info, "America/New_York");
     } catch (JsonProcessingException e) {
       System.out.println("Error in Json Processing: " + e);
     }
   }
+  */
 
   /**
    * Update the display based on new info
    *
    * @param info object version of the original JSON from Airlink
+   * @param timeZoneText friendly timezone string
    */
-  public void updateDisplay(AirLinkDTO info) {
+  public void updateDisplay(AirLinkDTO info, String timeZoneText) {
+    DateFormat df = new SimpleDateFormat("E, dd MMM YYYY hh:mm z");
+
+    df.setTimeZone(TimeZone.getTimeZone(timeZoneText));
     Platform.runLater(
         () -> {
           locationTB.setText(
-              "" + info.getLocation().getLatitude() + ", " + info.getLocation().getLongitude());
+              String.format("%1.4f", info.getLocation().getLatitude())
+                  + ", "
+                  + String.format("%1.4f", info.getLocation().getLongitude()));
 
           satellitesTB.setText("" + info.getGnssStatus().getNumberSatellites());
 
-          dateTB.setText("" + info.getTimestamp().getDate());
-          timeTB.setText("" + info.getTimestamp().getTime());
+          dateTB.setText(df.format(info.getTimestamp().getDAO()));
+
+          // dateTB.setText("" + info.getTimestamp().getDate());
+          // timeTB.setText("" + info.getTimestamp().getTime());
         });
 
     var wanStates = info.getWanState();
@@ -213,6 +223,7 @@ public class PrimaryController {
   private final double[] rsrqThresholds = new double[] {-10., -15., -20., -100000.};
   private final double[] sinrThresholds = new double[] {20., 13., 0., -100000.};
   private final double[] rssiThresholds = new double[] {-65., -75., -85., -95., -100000.};
+  private final double[] ssThresholds = new double[] {-80., -90., -100., -110., -100000.};
 
   // Changed to a constant strings to avoid making unnecessary objects on RPi
 
@@ -244,6 +255,9 @@ public class PrimaryController {
    * <p>Ranges and colors are from 4G (LTE) colors in this article:
    * https://wiki.teltonika-networks.com/view/Mobile_Signal_Strength_Recommendations
    *
+   * <p>Signal strength levels come from:
+   * https://www.wilsonamplifiers.com/blog/how-to-read-cell-phone-signal-strength-the-right-way/
+   *
    * @param textFields references into a Grid
    * @param wanState values for one wan from AirLink
    */
@@ -264,7 +278,7 @@ public class PrimaryController {
           // bandwidth
           textFields[3].setText("" + wanState.getBandwidth());
           // signalStrength
-          textFields[4].setText("" + wanState.getSignalStrength());
+          setField(textFields[4], wanState.getSignalStrength(), ssThresholds, fiveColors);
           // rssi
           setField(textFields[5], wanState.getRssi(), rssiThresholds, fiveColors);
           // rsrp
@@ -289,7 +303,7 @@ public class PrimaryController {
    */
   private void setField(TextField tf, double value, double threshold[], String[] colors) {
 
-    tf.setText("" + value);
+    tf.setText(String.format("%1.2f", value));
     for (int i = 0; i < threshold.length; i++) {
       if (value > threshold[i] || (i == threshold.length - 1)) {
         String colorInfo = colors[i] + "; " + textColors[i];
